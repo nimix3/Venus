@@ -1,6 +1,7 @@
 # Venus Framework
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb9559be5dc14e7b8d06f7c120dc59f9)](https://www.codacy.com/app/nimix3/Venus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nimix3/Venus&amp;utm_campaign=Badge_Grade)
+[![Telegram group](https://img.shields.io/badge/TELEGRAM-GROUP-green.svg)](https://t.me/joinchat/BjokYUiYV6gK9FCUNiB7lw)
 
 Secure, lightweight &amp; rapid web development framework.
 
