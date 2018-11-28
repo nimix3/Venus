@@ -1,6 +1,6 @@
 # Venus Framework
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6656412e0cdc4eb7944267f32efe6627)](https://www.codacy.com/app/nimix3/AngelsGate?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nimix3/AngelsGate&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bb9559be5dc14e7b8d06f7c120dc59f9)](https://www.codacy.com/app/nimix3/Venus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nimix3/Venus&amp;utm_campaign=Badge_Grade)
 
 Secure, lightweight &amp; rapid web development framework.
 
