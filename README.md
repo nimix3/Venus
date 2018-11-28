@@ -2,7 +2,7 @@
 
 Secure, lightweight &amp; rapid web development framework.
 
-![VenusFrameWork Logo](https://github.com/nimix3/Venus/blob/master/Venus/assets/images/venus.png "VenusFrameWork Logo")
+![VenusFrameWork Logo](https://github.com/nimix3/Venus/blob/master/Venus/assets/images/venus.png {:height="250px" width="250px"} "VenusFrameWork Logo")
 
 
 
