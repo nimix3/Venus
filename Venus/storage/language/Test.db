@@ -1,0 +1,7 @@
+[DEFAULT]
+_DIR_="RTL"
+salam="سلام"
+
+[English]
+salam="Hello"
+_DIR_="LTR"
