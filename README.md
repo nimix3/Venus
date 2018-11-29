@@ -12,7 +12,7 @@ Secure, lightweight &amp; rapid web development framework.
 <img src="https://github.com/nimix3/Venus/blob/master/Venus/assets/images/venus.png" width="250" height="250">
 
 
-## How do I add this to my project?
+## How do I get this framework?
 
 Install via Composer
 
@@ -40,6 +40,7 @@ Install via Git
 
 
 ### Term of use
+
 - Please Accept all of these rules before using this source, or if you declined with these please close this repository.
 
 1. Don't use this library to make dangerous applications and don't use for hacking or scamming purpose
@@ -48,6 +49,7 @@ Install via Git
 4. Help peoples who search for such library as you like! and tell them this repository link.
 
 
+### Documentation
 
 ## [Library Documentation](https://nimix3.github.io/Venus/)
 
@@ -62,11 +64,9 @@ Install via Git
 Ask your question at telegram group or create an issue in project bug tracker.
 
 **Attach following information**:
-
 * Full problem description and exception message
 * Stack-trace
 * Your code that runs in to this exception
-
 Without information listen above your issue will be closed
 
 
