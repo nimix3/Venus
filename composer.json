@@ -30,8 +30,7 @@
 "minimum-stability":"dev",
 "autoload": {
   "psr-4": {
-    "Core\\": "Venus/library/core",
-    "ThirdParty\\": "Venus/library/t3rdparty",
+    "Core\\": "Venus/library/core"
   }
 },
 "require": {
