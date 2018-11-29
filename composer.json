@@ -1,4 +1,18 @@
 {
+  "name": "nimix3/Venus",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "Framework",
+  "description": "Secure, lightweight & rapid web development framework",
+  "keywords": ["framework", "php-framework", "php", "cms-framework", "venus", "venusframework", "secure", "high-performance", "high-security", "high-speed", "rapid-development", "rapid-application-development", "lightweight", "php-component"],
+  "homepage": "https://github.com/nimix3/Venus",
+  "authors": [
+    {
+      "name": "Nima Akhlaghi",
+      "email": "info@nimix3.com",
+      "role": "CEO"
+    }
+  ],
 "repositories": [
     {
         "type":"package",
@@ -13,6 +27,7 @@
         }
     }
 ],
+"minimum-stability" = "dev",
 "require": {
     "nimix3/Venus": "master"
 }
