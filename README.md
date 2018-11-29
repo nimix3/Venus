@@ -49,6 +49,28 @@ Install via Git
 
 
 
+## [Library Documentation](https://nimix3.github.io/Venus/)
+
+## [Quick Start](https://github.com/nimix3/Venus/wiki/Quick-Start)
+
+## [Schema Documentation](https://nimix3.github.io/Venus/api/)
+
+
+
+### Nothing helps
+
+Ask your question at telegram group or create an issue in project bug tracker.
+
+**Attach following information**:
+
+* Full problem description and exception message
+* Stack-trace
+* Your code that runs in to this exception
+
+Without information listen above your issue will be closed
+
+
+
 ### Contacts 
 
 If you would like to ask a question, you can write to our linkedin or to the github (or both). To contact us via telegram, use our usernames :  
