@@ -13,18 +13,21 @@
       "role": "CEO"
     }
   ],
-  "minimum-stability":"dev",
-  "autoload": {
-    "psr-4": { "Core\\": "Venus/library/core" }
-  },
-   "repositories": [
+ "repositories": [
     {
-      "type": "git",
-      "url": "https://github.com/nimix3/Venus.git"
+        "type":"package",
+        "package": {
+          "name": "nimix3/venus",
+          "version":"master",
+          "source": {
+              "url": "https://github.com/nimix3/Venus.git",
+              "type": "git",
+              "reference":"master"
+            }
+        }
     }
-  ],
-  "require": {
-    "php": ">=5.6.0",
-    "nimix3/Venus": "master"
-  }
+],
+"require": {
+    "nimix3/venus": "master"
+}
 }
