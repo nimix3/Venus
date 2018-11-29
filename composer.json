@@ -27,7 +27,13 @@
         }
     }
 ],
+"minimum-stability":"dev",
+ "autoload": {
+   "psr-4": {
+     "Core\\": "Venus/library/core"
+   }
+ },
 "require": {
-    "nimix3/venus": "master"
+    "nimix3/venus": "dev-master"
 }
 }
