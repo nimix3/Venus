@@ -12,6 +12,27 @@ Secure, lightweight &amp; rapid web development framework.
 <img src="https://github.com/nimix3/Venus/blob/master/Venus/assets/images/venus.png" width="250" height="250">
 
 
+## How do I add this to my project?
+
+Install via Composer
+
+```
+	> composer require nimix3/venus=dev-master
+```
+
+Install via Download
+
+```
+	> curl -O https://github.com/nimix3/Venus/archive/master.zip
+```
+
+Install via Git
+
+```
+	> git clone https://github.com/nimix3/Venus.git
+```
+
+
 ### Authors:
 
 - [NiMiX3 (Nima Akhlaghi)](https://github.com/nimix3)
