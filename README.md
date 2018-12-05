@@ -59,7 +59,7 @@ Install via Git
 
 
 
-### Nothing helps
+### Helps & Supports
 
 Ask your question at telegram group or create an issue in project bug tracker.
 
