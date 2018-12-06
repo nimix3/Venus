@@ -48,8 +48,12 @@ class Template
 		ob_clean();
 		if(file_exists($filename))
 			echo $this->ViewFile($filename,$data,$callback,$allowPhp);
-		else
+		else if(file_exists($filename.".qp"))
 			echo $this->ViewFile($filename.".qp",$data,$callback,$allowPhp);
+		else if(file_exists(dirname( __FILE__ )."/../../".$filename))
+		    echo $this->ViewFile(dirname( __FILE__ )."/../../".$filename,$data,$callback,$allowPhp);
+		else
+		    echo $this->ViewFile(dirname( __FILE__ )."/../../".$filename.".qp",$data,$callback,$allowPhp);
 		ob_flush();
 	}
 	
