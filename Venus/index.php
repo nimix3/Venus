@@ -17,7 +17,7 @@ $Plugin = new Core\Plugin('plugin');
 $File = new Core\File();
 
 /***  Usage(Router)  ***/
-$Listener->Bind('GET','/',$Listener->BoilCallBack(array($Template,'ShowFile'),'view/'.$Locale->GetSlangDirection('DEFAULT').'/intro.html',array('version'=>$File->Read('version')),false,false));
+$Listener->Bind('GET','/venus',$Listener->BoilCallBack(array($Template,'ShowFile'),'view/'.$Locale->GetSlangDirection('DEFAULT').'/intro.html',array('version'=>$File->Read('version')),false,false));
 $Listener->Bind('GET','/',$Listener->BoilCallBack(array($Template,'ShowFile'),'view/'.$Locale->GetSlangDirection('DEFAULT').'/intro.html',array('version'=>$File->Read('version')),false,false));
 $Listener->Bind('POST','/ajax',
 	function($input)
