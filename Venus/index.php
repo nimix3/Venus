@@ -17,15 +17,12 @@ $Plugin = new Core\Plugin('plugin');
 $File = new Core\File();
 
 /***  Usage(Router)  ***/
-
-$Listener->Bind('GET','/venus',array($Template,'ShowFile'),array('view/'.$Locale->GetSlangDirection('DEFAULT').'/intro.html',array('version'=>$File->Read('version')),false,false),false);
-$Listener->Bind('GET','/',array($Template,'ShowFile'),array('view/'.$Locale->GetSlangDirection('DEFAULT').'/intro.html',array('version'=>$File->Read('version')),false,false),false);
+$Listener->Bind('GET','/',$Listener->BoilCallBack(array($Template,'ShowFile'),'view/'.$Locale->GetSlangDirection('DEFAULT').'/intro.html',array('version'=>$File->Read('version')),false,false));
+$Listener->Bind('GET','/',$Listener->BoilCallBack(array($Template,'ShowFile'),'view/'.$Locale->GetSlangDirection('DEFAULT').'/intro.html',array('version'=>$File->Read('version')),false,false));
 $Listener->Bind('POST','/ajax',
 	function($input)
 	{
 		$Elektra = new ThirdParty\Elektra();
 		$Elektra->Add('#form_result','success','html')->Response(true);
-	}
-	,array()
-	,false);
+	});
 ?>
