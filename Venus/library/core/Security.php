@@ -28,7 +28,7 @@ class Security
 	
 	public function SaveImageSecure($Stream,$File,$Format='jpg')
 	{
-		$Resource = $this->SecureImage($Stream);
+		$Resource = $this->GetImageSecure($Stream);
 		if(isset($Resource) and !empty($Resource))
 		{
 			if($Format == 'jpg')
@@ -193,7 +193,7 @@ class Security
 	
 	public function GenerateHash($Password)
 	{
-		retrurn password_hash($Password,PASSWORD_DEFAULT);
+		return password_hash($Password,PASSWORD_DEFAULT);
 	}
 	
 	public function ValidatePassword($Password,$Hash)
@@ -310,9 +310,9 @@ class Security
 		if(!isset($handler) or empty($handler))
 			return false;
 		session_start();
-		$_SESSION[$handler] = md5(uniqid(rand(), true));
-		session_regenerate_id();
-		return true;
+		@ session_regenerate_id();
+		$_SESSION[$handler] = md5(uniqid(rand(), true));		
+		return $_SESSION[$handler];
 	}
 	
 	public function GenCSRF($handler='csrf')
@@ -329,18 +329,18 @@ class Security
 		{
 			if($this->IsEqual($_SESSION[$handler],$value))
 			{
-				session_regenerate_id();
+				@ session_regenerate_id();
 				return true;
 			}
 			else
 			{
-				session_regenerate_id();
+				@ session_regenerate_id();
 				return false;
 			}
 		}
 		else
 		{
-			session_regenerate_id();
+			@ session_regenerate_id();
 			return false;
 		}
 	}
