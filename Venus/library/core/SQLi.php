@@ -1,5 +1,5 @@
 <?php
-// SQLi Class Library V.1 By NIMIX3 for VENUS FRAMEWORK that is Under MIT License.
+// SQLi Class Library V.1.1 By NIMIX3 for VENUS FRAMEWORK that is Under MIT License.
 // NOTE: PLEASE DO NOT EDIT OR SELL THIS CODE FOR COMMERCIAL PURPOSE EXCEPT REFER TO VENUS FRAMEWORK IN YOUR PRODUCT!
 namespace Venus\library\core;
 class SQLi
@@ -296,7 +296,7 @@ class SQLi
 		}
 	}
 	
-	public function SelectDB($select,$from,$where,$sign,$statement,$limit = 1,$xquery='')
+	public function SelectDB($select,$from,$where,$sign,$statement,$limit = 1,$xquery='',$rich=false)
 	{
 		try{
 			@ $statement = str_replace("'","''",$statement);
@@ -312,28 +312,44 @@ class SQLi
 				$res = null;
 				@ $result = mysqli_query($this->DBobj,$sql);
 				if(!isset($result) or empty($result) or is_bool($result))
-					return null;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+					else
+						return null;
+				$affected = mysqli_num_rows($result);
 				if(mysqli_num_rows($result) <= 0)
-					return null;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> false);
+					else
+						return null;
 				while ($row = mysqli_fetch_assoc($result)) {
 					$res[] = $row;
 				}
 				mysqli_free_result($result);
-				return $res;
+				if($rich)
+					return array('result'=> $res, 'info'=> null, 'affected'=> intval($affected), 'error'=> false);
+				else
+					return $res;
 			}
 			else
 			{
-				return null;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function SelectDBsecure($select,$from,$where,$sign,$statement,$vars='',$limit = 1,$xquery='')
+	public function SelectDBsecure($select,$from,$where,$sign,$statement,$vars='',$limit = 1,$xquery='',$rich=false)
 	{
 		try{
 			if(!is_array($vars))
@@ -354,7 +370,10 @@ class SQLi
 				if($stmt === false)
 				{
 					$this->LastError[] = "Prepare error";
-					return false;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+					else
+						return null;
 				}
 				$params = array();
 				$types  = array_reduce($vars, function ($string, &$arg) use (&$params) {
@@ -371,13 +390,21 @@ class SQLi
 				mysqli_stmt_bind_param($stmt,$types,...array_values($vars));
 				mysqli_stmt_execute($stmt);
 				$res = null;
+				$affected = 0;
 				if(function_exists('mysqli_stmt_get_result'))
 				{
 					@ $result = mysqli_stmt_get_result($stmt);
 					if(!isset($result) or empty($result) or is_bool($result))
-						return null;
+						if($rich)
+							return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+						else
+							return null;
+					$affected = mysqli_num_rows($result);
 					if(mysqli_num_rows($result) <= 0)
-						return null;
+						if($rich)
+							return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> false);
+						else
+							return null;
 					while ($row = mysqli_fetch_assoc($result)) {
 						$res[] = $row;
 					}
@@ -386,7 +413,16 @@ class SQLi
 				{
 					@ $result = $this->mysqlo_stmt_get_result($stmt);
 					if(!isset($result) or empty($result) or is_bool($result))
-						return null;
+						if($rich)
+							return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+						else
+							return null;
+					$affected = count($result);
+					if(count($result) <= 0)
+						if($rich)
+							return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> false);
+						else
+							return null;
 					while ($row = array_shift($result)) {
 						$res[] = $row;
 					}
@@ -394,21 +430,30 @@ class SQLi
 				@ mysqli_stmt_free_result($stmt);
 				@ mysqli_free_result($result);
 				mysqli_stmt_close($stmt);
-				return $res;
+				if($rich)
+					return array('result'=> $res, 'info'=> null, 'affected'=> intval($affected), 'error'=> false);
+				else
+					return $res;
 			}
 			else
 			{
-				return null;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function UpdateDB($table,$where,$sign,$statement,$data,$limit=1)
+	public function UpdateDB($table,$where,$sign,$statement,$data,$limit=1,$rich=false)
 	{
 		try{
 			$d = "";
@@ -425,24 +470,37 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_query($this->DBobj,$sql);
-				if(!$result)
-					return false;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
 				else
-					return $result;
+				{
+					if(!$result)
+						return false;
+					else
+						return $result;
+				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function UpdateDBsecure($table,$where,$sign,$statement,$vars='',$data,$limit=1)
+	public function UpdateDBsecure($table,$where,$sign,$statement,$vars='',$data,$limit=1,$rich=false)
 	{
 		try{
 			if(!is_array($vars))
@@ -469,7 +527,10 @@ class SQLi
 				if($stmt === false)
 				{
 					$this->LastError[] = "Prepare error";
-					return false;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+					else
+						return null;
 				}
 				$params = array();
 				$types  = array_reduce($vars, function ($string, &$arg) use (&$params) {
@@ -484,73 +545,94 @@ class SQLi
 				array_unshift($params , $stmt);
 				//@ call_user_func_array("mysqli_stmt_bind_param",$params);
 				mysqli_stmt_bind_param($stmt,$types,...array_values($vars));
-				mysqli_stmt_execute($stmt);
+				$res = mysqli_stmt_execute($stmt);
+				$affected = mysqli_stmt_affected_rows($stmt);
 				if(mysqli_stmt_affected_rows($stmt) <= 0)
 				{
 					@ mysqli_stmt_free_result($stmt);
+					$info = mysqli_stmt_insert_id($stmt);
 					mysqli_stmt_close($stmt);
-					return false;
+					if($rich)
+						return array('result'=> $res, 'info'=> $info, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return false;
 				}
 				else
 				{
 					@ mysqli_stmt_free_result($stmt);
+					$info = mysqli_stmt_insert_id($stmt);
 					mysqli_stmt_close($stmt);
-					return true;
+					if($rich)
+						return array('result'=> $res, 'info'=> $info, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return true;
 				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function UpdateOrInsertDB($table,$where,$sign,$statement,$data,$limit=1)
+	public function UpdateOrInsertDB($table,$where,$sign,$statement,$data,$limit=1,$rich=false)
 	{
 		try{
 			$res = $this->SelectDB('COUNT(*) AS total',$table,$where,$sign,$statement,$limit);
 			if(isset($res[0]['total']) and !empty($res[0]['total']))
 			{
-				return $this->UpdateDB($table,$where,$sign,$statement,$data,$limit);
+				return $this->UpdateDB($table,$where,$sign,$statement,$data,$limit,$rich);
 			}
 			else
 			{
-				return $this->InsertDB($table,$data);
+				return $this->InsertDB($table,$data,$rich);
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function UpdateOrInsertDBsecure($table,$where,$sign,$statement,$vars='',$data,$limit=1)
+	public function UpdateOrInsertDBsecure($table,$where,$sign,$statement,$vars='',$data,$limit=1,$rich=false)
 	{
 		try{
 			$res = $this->SelectDBsecure('COUNT(*) AS total',$table,$where,$sign,$statement,$vars,$limit);
 			if(isset($res[0]['total']) and !empty($res[0]['total']))
 			{
-				return $this->UpdateDBsecure($table,$where,$sign,$statement,$vars,$data,$limit);
+				return $this->UpdateDBsecure($table,$where,$sign,$statement,$vars,$data,$limit,$rich);
 			}
 			else
 			{
-				return $this->InsertDBsecure($table,$data);
+				return $this->InsertDBsecure($table,$data,$rich);
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function ReplaceDB($table,$data)
+	public function ReplaceDB($table,$data,$rich=false)
 	{
 		try{
 			$d = "";
@@ -567,22 +649,35 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_query($this->DBobj,$sql);
-				if(!$result)
-					return false;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
 				else
-					return $result;
+				{
+					if(!$result)
+						return false;
+					else
+						return $result;
+				}
 			}
 			else
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function ReplaceDBsecure($table,$vars)
+	public function ReplaceDBsecure($table,$vars,$rich=false)
 	{
 		try{
 			$d = "";
@@ -602,7 +697,10 @@ class SQLi
 				if($stmt === false)
 				{
 					$this->LastError[] = "Prepare error";
-					return false;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+					else
+						return null;
 				}
 				$params = array();
 				$types  = array_reduce($vars, function ($string, &$arg) use (&$params) {
@@ -617,33 +715,47 @@ class SQLi
 				array_unshift($params , $stmt);
 				//@ call_user_func_array("mysqli_stmt_bind_param",$params);
 				mysqli_stmt_bind_param($stmt,$types,...array_values($vars));
-				mysqli_stmt_execute($stmt);
+				$res = mysqli_stmt_execute($stmt);
+				$affected = mysqli_stmt_affected_rows($stmt);
 				if(mysqli_stmt_affected_rows($stmt) <= 0)
 				{
 					@ mysqli_stmt_free_result($stmt);
+					$info = mysqli_stmt_insert_id($stmt);
 					mysqli_stmt_close($stmt);
-					return false;
+					if($rich)
+						return array('result'=> $res, 'info'=> $info, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return false;
 				}
 				else
 				{
 					@ mysqli_stmt_free_result($stmt);
 					mysqli_stmt_close($stmt);
-					return true;
+					if($rich)
+						return array('result'=> $res, 'info'=> null, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return true;
 				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function DeleteDB($table,$where,$sign,$statement,$limit=1)
+	public function DeleteDB($table,$where,$sign,$statement,$limit=1,$rich=false)
 	{
 		try{
 			@ $statement = str_replace("'","''",$statement);
@@ -654,24 +766,37 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_query($this->DBobj,$sql);
-				if(!$result)
-					return false;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
 				else
-					return $result;
+				{
+					if(!$result)
+						return false;
+					else
+						return $result;
+				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function DeleteDBsecure($table,$where,$sign,$statement,$vars='',$limit=1)
+	public function DeleteDBsecure($table,$where,$sign,$statement,$vars='',$limit=1,$rich=false)
 	{
 		try{
 			if(!is_array($vars))
@@ -689,7 +814,10 @@ class SQLi
 				if($stmt === false)
 				{
 					$this->LastError[] = "Prepare error";
-					return false;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+					else
+						return null;
 				}
 				$params = array();
 				$types  = array_reduce($vars, function ($string, &$arg) use (&$params) {
@@ -704,33 +832,47 @@ class SQLi
 				array_unshift($params , $stmt);
 				//@ call_user_func_array("mysqli_stmt_bind_param",$params);
 				mysqli_stmt_bind_param($stmt,$types,...array_values($vars));
-				mysqli_stmt_execute($stmt);
+				$res = mysqli_stmt_execute($stmt);
+				$affected = mysqli_stmt_affected_rows($stmt);
 				if(mysqli_stmt_affected_rows($stmt) <= 0)
 				{
 					@ mysqli_stmt_free_result($stmt);
+					$info = mysqli_stmt_insert_id($stmt);
 					mysqli_stmt_close($stmt);
-					return false;
+					if($rich)
+						return array('result'=> $res, 'info'=> $info, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return false;
 				}
 				else
 				{
 					@ mysqli_stmt_free_result($stmt);
 					mysqli_stmt_close($stmt);
-					return true;
+					if($rich)
+						return array('result'=> $res, 'info'=> null, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return true;
 				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function InsertDB($table,$data)
+	public function InsertDB($table,$data,$rich=false)
 	{
 		try{
 			$d = "";
@@ -750,24 +892,37 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_query($this->DBobj,$sql);
-				if(!$result)
-					return false;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
 				else
-					return $result;
+				{
+					if(!$result)
+						return false;
+					else
+						return $result;
+				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function InsertDBsecure($table,$vars)
+	public function InsertDBsecure($table,$vars,$rich=false)
 	{
 		try{
 			$d = "";
@@ -790,7 +945,10 @@ class SQLi
 				if($stmt === false)
 				{
 					$this->LastError[] = "Prepare error";
-					return false;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+					else
+						return null;
 				}
 				$params = array();
 				$types  = array_reduce($vars, function ($string, &$arg) use (&$params) {
@@ -805,33 +963,48 @@ class SQLi
 				array_unshift($params , $stmt);
 				//@ call_user_func_array("mysqli_stmt_bind_param",$params);
 				mysqli_stmt_bind_param($stmt,$types,...array_values($vars));
-				mysqli_stmt_execute($stmt);
+				$res = mysqli_stmt_execute($stmt);
+				$affected = mysqli_stmt_affected_rows($stmt);
 				if(mysqli_stmt_affected_rows($stmt) <= 0)
 				{
 					@ mysqli_stmt_free_result($stmt);
+					$info = mysqli_stmt_insert_id($stmt);
 					mysqli_stmt_close($stmt);
-					return false;
+					if($rich)
+						return array('result'=> $res, 'info'=> $info, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return false;
 				}
 				else
 				{
 					@ mysqli_stmt_free_result($stmt);
+					$info = mysqli_stmt_insert_id($stmt);
 					mysqli_stmt_close($stmt);
-					return true;
+					if($rich)
+						return array('result'=> $res, 'info'=> $info, 'affected'=> intval($affected), 'error'=> boolval($res));
+					else
+						return true;
 				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}	
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 
-	public function TableExistDB($table)
+	public function TableExistDB($table,$rich=false)
 	{
 		try{
 			$sql = "DESCRIBE `".$table."`";
@@ -841,24 +1014,37 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_query($this->DBobj,$sql);
-				if(!$result)
-					return false;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
 				else
-					return $result;
+				{
+					if(!$result)
+						return false;
+					else
+						return $result;
+				}
 			}
 			else
 			{
-				return null;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 
-	public function ClearTableDB($table)
+	public function ClearTableDB($table,$rich=false)
 	{
 		try{
 			$sql = "TRUNCATE TABLE `".$table."`";
@@ -868,24 +1054,37 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_query($this->DBobj,$sql);
-				if(!$result)
-					return false;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
 				else
-					return $result;
+				{
+					if(!$result)
+						return false;
+					else
+						return $result;
+				}
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return false;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 
-	public function ExecDB($exec)
+	public function ExecDB($exec,$rich=false)
 	{
 		try{
 			$sql = $exec;
@@ -895,21 +1094,34 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_query($this->DBobj,$sql);
-				return $result;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
+				else
+				{
+					return $result;
+				}
 			}
 			else
 			{
-				return null;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 	
-	public function ExecMultiDB($exec)
+	public function ExecMultiDB($exec,$rich=false)
 	{
 		try{
 			$sql = $exec;
@@ -919,21 +1131,34 @@ class SQLi
 			if($this->DBobj)
 			{
 				@ $result = mysqli_multi_query($this->DBobj,$sql);
-				return $result;
+				if($rich)
+				{
+					return array('result'=> $result, 'info'=> mysqli_insert_id($this->DBobj), 'affected'=> mysqli_num_rows($result), 'error'=> false);
+				}
+				else
+				{
+					return $result;
+				}
 			}
 			else
 			{
-				return null;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 
-	public function ExecDBsecure($exec,$vars)
+	public function ExecDBsecure($exec,$vars,$rich=false)
 	{
 		try{
 			$sql = $exec;
@@ -946,7 +1171,10 @@ class SQLi
 				if($stmt === false)
 				{
 					$this->LastError[] = "Prepare error";
-					return false;
+					if($rich)
+						return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+					else
+						return null;
 				}
 				$params = array();
 				$types  = array_reduce($vars, function ($string, &$arg) use (&$params) {
@@ -968,19 +1196,30 @@ class SQLi
 				else
 					@ $result = $this->mysqlo_stmt_get_result($stmt);
 				@ mysqli_stmt_free_result($stmt);
-				@ mysqli_free_result($result);
+				$affected = mysqli_stmt_affected_rows($stmt);
+				//@ mysqli_free_result($result);
+				$info = mysqli_stmt_insert_id($stmt);
 				mysqli_stmt_close($stmt);
-				return $result;
+				if($rich)
+						return array('result'=> $result, 'info'=> $info, 'affected'=> intval($affected), 'error'=> false);
+					else
+						return $result;
 			}
 			else
 			{
-				return false;
+				if($rich)
+					return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+				else
+					return null;
 			}
 		}
 		catch(Exception $ex)
 		{
 			$this->LastError[] = $ex->getMessage();
-			return NULL;
+			if($rich)
+				return array('result'=> null, 'info'=> null, 'affected'=> 0, 'error'=> true);
+			else
+				return null;
 		}
 	}
 
