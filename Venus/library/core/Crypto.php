@@ -1,5 +1,5 @@
 <?php
-// Crypto Class Library V.1 By NIMIX3 for VENUS FRAMEWORK that is Under MIT License.
+// Crypto Class Library V.1.2 By NIMIX3 for VENUS FRAMEWORK that is Under MIT License.
 // NOTE: PLEASE DO NOT EDIT OR SELL THIS CODE FOR COMMERCIAL PURPOSE EXCEPT REFER TO VENUS FRAMEWORK IN YOUR PRODUCT!
 namespace Venus\library\core;
 class Crypto
@@ -21,7 +21,7 @@ class Crypto
 		}
 	}
 
-	public function OldDecrypt($Cypher,$KEY=NULL,$IV=NULL)
+	public function OldDecrypt($Cypher,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -31,6 +31,12 @@ class Crypto
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
 			$Cypher = base64_decode($Cypher);
+			if($IsCompress)
+			{
+				$Cypher = gzuncompress($Cypher);
+				if($Cypher === false)
+					throw Exception('bad compression');
+			}
 			return $this->PKCS7_UnPadding((mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $KEY, $Cypher, MCRYPT_MODE_CBC, $IV)));
 		}
 		catch(Exception $ex)
@@ -40,7 +46,7 @@ class Crypto
 		}
 	}
 	
-	public function MyEncrypt($PlainText,$Mode,$KEY=NULL,$IV=NULL)
+	public function MyEncrypt($PlainText,$Mode,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -51,7 +57,18 @@ class Crypto
 		try{
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
-			return base64_encode(openssl_encrypt($PlainText, $Mode, $KEY, OPENSSL_RAW_DATA, $IV));
+			if($IsCompress)
+			{
+				$Cypher = openssl_encrypt($PlainText, $Mode, $KEY, OPENSSL_RAW_DATA, $IV);
+				$Cypher = gzcompress($Cypher,9);
+				if($Cypher === false)
+					throw Exception('bad compression');
+				return base64_encode($Cypher);
+			}
+			else
+			{
+				return base64_encode(openssl_encrypt($PlainText, $Mode, $KEY, OPENSSL_RAW_DATA, $IV));
+			}
 		}
 		catch(Exception $ex)
 		{
@@ -60,7 +77,7 @@ class Crypto
 		}
 	}
 	
-	public function MyDecrypt($Cypher,$Mode,$KEY=NULL,$IV=NULL)
+	public function MyDecrypt($Cypher,$Mode,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -72,6 +89,12 @@ class Crypto
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
 			$Cypher = base64_decode($Cypher);
+			if($IsCompress)
+			{
+				$Cypher = gzuncompress($Cypher);
+				if($Cypher === false)
+					throw Exception('bad compression');
+			}
 			return openssl_decrypt($Cypher, $Mode, $KEY, OPENSSL_RAW_DATA, $IV);
 		}
 		catch(Exception $ex)
@@ -81,7 +104,7 @@ class Crypto
 		}
 	}
 	
-	public function AdvDecrypt($Cypher,$KEY=NULL,$IV=NULL)
+	public function AdvDecrypt($Cypher,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -91,6 +114,12 @@ class Crypto
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
 			$Cypher = base64_decode($Cypher);
+			if($IsCompress)
+			{
+				$Cypher = gzuncompress($Cypher);
+				if($Cypher === false)
+					throw Exception('bad compression');
+			}
 			return openssl_decrypt($Cypher, 'AES-128-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
 		}
 		catch(Exception $ex)
@@ -100,7 +129,7 @@ class Crypto
 		}
 	}
 	
-	public function HighDecrypt($Cypher,$KEY=NULL,$IV=NULL)
+	public function HighDecrypt($Cypher,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -110,6 +139,12 @@ class Crypto
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
 			$Cypher = base64_decode($Cypher);
+			if($IsCompress)
+			{
+				$Cypher = gzuncompress($Cypher);
+				if($Cypher === false)
+					throw Exception('bad compression');
+			}
 			return openssl_decrypt($Cypher, 'AES-256-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
 		}
 		catch(Exception $ex)
@@ -119,7 +154,7 @@ class Crypto
 		}
 	}
 	
-	public function AdvEncrypt($PlainText,$KEY=NULL,$IV=NULL)
+	public function AdvEncrypt($PlainText,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -128,7 +163,18 @@ class Crypto
 		try{
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
-			return base64_encode(openssl_encrypt($PlainText, 'AES-128-CBC', $KEY, OPENSSL_RAW_DATA, $IV));
+			if($IsCompress)
+			{
+				$Cypher = openssl_encrypt($PlainText, 'AES-128-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
+				$Cypher = gzcompress($Cypher,9);
+				if($Cypher === false)
+					throw Exception('bad compression');
+				return base64_encode($Cypher);
+			}
+			else
+			{
+				return base64_encode(openssl_encrypt($PlainText, 'AES-128-CBC', $KEY, OPENSSL_RAW_DATA, $IV));
+			}
 		}
 		catch(Exception $ex)
 		{
@@ -137,7 +183,7 @@ class Crypto
 		}
 	}
 	
-	public function HighEncrypt($PlainText,$KEY=NULL,$IV=NULL)
+	public function HighEncrypt($PlainText,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -146,7 +192,18 @@ class Crypto
 		try{
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
-			return base64_encode(openssl_encrypt($PlainText, 'AES-256-CBC', $KEY, OPENSSL_RAW_DATA, $IV));
+			if($IsCompress)
+			{
+				$Cypher = openssl_encrypt($PlainText, 'AES-256-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
+				$Cypher = gzcompress($Cypher,9);
+				if($Cypher === false)
+					throw Exception('bad compression');
+				return base64_encode($Cypher);
+			}
+			else
+			{
+				return base64_encode(openssl_encrypt($PlainText, 'AES-256-CBC', $KEY, OPENSSL_RAW_DATA, $IV));
+			}
 		}
 		catch(Exception $ex)
 		{
@@ -155,7 +212,7 @@ class Crypto
 		}
 	}
 
-	public function OldEncrypt($PlainText,$KEY=NULL,$IV=NULL)
+	public function OldEncrypt($PlainText,$KEY=NULL,$IV=NULL,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
@@ -164,7 +221,18 @@ class Crypto
 		try{
 			$KEY = base64_decode($KEY);
 			$IV = base64_decode($IV);
-			return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $KEY, $this->PKCS7_Padding($PlainText), MCRYPT_MODE_CBC, $IV));
+			if($IsCompress)
+			{
+				$Cypher = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $KEY, $this->PKCS7_Padding($PlainText), MCRYPT_MODE_CBC, $IV);
+				$Cypher = gzcompress($Cypher,9);
+				if($Cypher === false)
+					throw Exception('bad compression');
+				return base64_encode($Cypher);
+			}
+			else
+			{
+				return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $KEY, $this->PKCS7_Padding($PlainText), MCRYPT_MODE_CBC, $IV));
+			}
 		}
 		catch(Exception $ex)
 		{
@@ -173,13 +241,24 @@ class Crypto
 		}
 	}
 
-	public function Encrypt($PlainText,$KEY)
+	public function Encrypt($PlainText,$KEY,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
 		try{
 			$KEY = base64_decode($KEY);
-			return base64_encode($this->SWAP(mcrypt_encrypt(MCRYPT_BLOWFISH, $KEY, $this->SWAP($this->PKCS5_Padding($PlainText)), 'ecb')));
+			if($IsCompress)
+			{
+				$Cypher = $this->SWAP(mcrypt_encrypt(MCRYPT_BLOWFISH, $KEY, $this->SWAP($this->PKCS5_Padding($PlainText)), 'ecb'));
+				$Cypher = gzcompress($Cypher,9);
+				if($Cypher === false)
+					throw Exception('bad compression');
+				return base64_encode($Cypher);
+			}
+			else
+			{
+				return base64_encode($this->SWAP(mcrypt_encrypt(MCRYPT_BLOWFISH, $KEY, $this->SWAP($this->PKCS5_Padding($PlainText)), 'ecb')));
+			}
 		}
 		catch(Exception $ex){
 			$this->LastError[] = $ex->getMessage();
@@ -187,12 +266,18 @@ class Crypto
 		}
 	}
 
-	public function Decrypt($Cypher,$KEY)
+	public function Decrypt($Cypher,$KEY,$IsCompress=false)
 	{
 		if(!isset($KEY) or empty($KEY))
 			$KEY = $this->KEY;
 		try{
 			$Cypher = base64_decode($Cypher);
+			if($IsCompress)
+			{
+				$Cypher = gzuncompress($Cypher);
+				if($Cypher === false)
+					throw Exception('bad compression');
+			}
 			$KEY = base64_decode($KEY);
 			return $this->PKCS5_UnPadding($this->SWAP(mcrypt_decrypt(MCRYPT_BLOWFISH, $KEY, $this->SWAP($Cypher), 'ecb')));
 		}
