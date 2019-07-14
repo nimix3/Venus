@@ -234,7 +234,7 @@ class RealTime
 								$ClientIP = null;
 								$ClientPort = null;
 								@ socket_getpeername($socket, $ClientIP, $ClientPort);
-								@ $response_text = call_user_func_array($Callable, array($received_text,$ClientIP,$ClientPort));
+								@ $response_text = call_user_func_array($Callable, array($received_text,$ClientIP,$ClientPort,$socket));
 							}
 							$response_text = $this->Mask($response_text);
 							$this->Send($response_text,$socket);
