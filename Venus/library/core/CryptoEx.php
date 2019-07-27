@@ -2,7 +2,7 @@
 // CryptoEx Class Library V.1.2 By phpseclib and NIMIX3 for VENUS FRAMEWORK that is Under MIT License.
 // PHP Secure Communications Library http://phpseclib.sourceforge.net is under MIT License.
 // NOTE: PLEASE DO NOT EDIT OR SELL THIS CODE FOR COMMERCIAL PURPOSE EXCEPT REFER TO VENUS FRAMEWORK IN YOUR PRODUCT!
-namespace Venus\library\core;
+namespace Venus\library\core {
 class CryptoEx
 {
 	protected $KEY;
@@ -27,7 +27,7 @@ class CryptoEx
 		try{
 			if(!isset($PUBKEY) or empty($PUBKEY))
 				$PUBKEY = $this->PUBKEY;
-			$rsa = new Crypt_RSA();
+			$rsa = new \Crypt_RSA();
 			$rsa->setEncryptionMode(1);
 			$rsa->setMGFHash('sha1');
 			$rsa->setHash('sha256');
@@ -45,7 +45,7 @@ class CryptoEx
 		try{
 			if(!isset($PRVKEY) or empty($PRVKEY))
 				$PRVKEY = $this->PRVKEY;
-			$rsa = new Crypt_RSA();
+			$rsa = new \Crypt_RSA();
 			$rsa->setEncryptionMode(1);
 			$rsa->setMGFHash('sha1');
 			$rsa->setHash('sha256');
@@ -63,7 +63,7 @@ class CryptoEx
 		if(intval($keysize) < 1024 or intval($keysize) > 4096)
 			$keysize = 4096;
 		try{
-			$rsa = new Crypt_RSA();
+			$rsa = new \Crypt_RSA();
 			$rsa->setHash('sha512');
 			$rsa->setComment('nocomment');
 			$keys = $rsa->createKey($keysize);
@@ -159,7 +159,7 @@ class CryptoEx
 	public function HighRandomString($Length=8)
 	{
 		try{
-			$rsa = new Crypt_RSA();
+			$rsa = new \Crypt_RSA();
 			return $rsa->crypt_random_string($Length);
 		}
 		catch(Exception $ex){
@@ -241,7 +241,7 @@ class CryptoEx
 				$Cypher = openssl_encrypt($PlainText, $Mode, $KEY, OPENSSL_RAW_DATA, $IV);
 				$Cypher = gzcompress($Cypher,9);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 				return base64_encode($Cypher);
 			}
 			else
@@ -272,7 +272,7 @@ class CryptoEx
 			{
 				$Cypher = gzuncompress($Cypher);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 			}
 			return openssl_decrypt($Cypher, $Mode, $KEY, OPENSSL_RAW_DATA, $IV);
 		}
@@ -297,7 +297,7 @@ class CryptoEx
 			{
 				$Cypher = gzuncompress($Cypher);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 			}
 			return openssl_decrypt($Cypher, 'AES-128-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
 		}
@@ -322,7 +322,7 @@ class CryptoEx
 			{
 				$Cypher = gzuncompress($Cypher);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 			}
 			return openssl_decrypt($Cypher, 'AES-256-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
 		}
@@ -347,7 +347,7 @@ class CryptoEx
 				$Cypher = openssl_encrypt($PlainText, 'AES-128-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
 				$Cypher = gzcompress($Cypher,9);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 				return base64_encode($Cypher);
 			}
 			else
@@ -376,7 +376,7 @@ class CryptoEx
 				$Cypher = openssl_encrypt($PlainText, 'AES-256-CBC', $KEY, OPENSSL_RAW_DATA, $IV);
 				$Cypher = gzcompress($Cypher,9);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 				return base64_encode($Cypher);
 			}
 			else
@@ -405,7 +405,7 @@ class CryptoEx
 				$Cypher = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $KEY, $this->PKCS7_Padding($PlainText), MCRYPT_MODE_CBC, $IV);
 				$Cypher = gzcompress($Cypher,9);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 				return base64_encode($Cypher);
 			}
 			else
@@ -431,7 +431,7 @@ class CryptoEx
 				$Cypher = $this->SWAP(mcrypt_encrypt(MCRYPT_BLOWFISH, $KEY, $this->SWAP($this->PKCS5_Padding($PlainText)), 'ecb'));
 				$Cypher = gzcompress($Cypher,9);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 				return base64_encode($Cypher);
 			}
 			else
@@ -455,7 +455,7 @@ class CryptoEx
 			{
 				$Cypher = gzuncompress($Cypher);
 				if($Cypher === false)
-					throw new Exception('bad compression');
+					throw new \Exception('bad compression');
 			}
 			$KEY = base64_decode($KEY);
 			return $this->PKCS5_UnPadding($this->SWAP(mcrypt_decrypt(MCRYPT_BLOWFISH, $KEY, $this->SWAP($Cypher), 'ecb')));
@@ -557,9 +557,9 @@ class CryptoEx
 		return $this->LastError;
 	}
 }
+}
 
-
-
+namespace {
 define('CRYPT_HASH_MODE_INTERNAL', 1);
 define('CRYPT_HASH_MODE_MHASH',    2);
 define('CRYPT_HASH_MODE_HASH',     3);
@@ -5034,5 +5034,6 @@ class Math_BigInteger
         }
         return ($x - ($x % $y)) / $y;
     }
+}
 }
 ?>
